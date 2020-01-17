@@ -1,0 +1,99 @@
+MICROSERVICES TUTORIAL - UDEMY
+
+composer create-project --prefer-dist laravel/lumen LumenAuthorApi
+
+php -S localhost:8000 -t public
+change .env file Database DB_CONNECTION from mysql to sqlite
+Add new file to Database folder name it database.sqlite
+Add .env and database.sqlite to gitignore file
+Goto app.php to uncomment facades and eloquent
+Goto http://www.unit-conversion.info/texttools/random-string-generator/ to get appKey , generate a length 32
+Add key generated to APP_Key in env
+Migrations: php artisan make:migration CreateAuthorsTable --create=authors
+            php artisan migrate
+
+Rename the Model class User to Author 
+Factory for Author => to create random profile
+    Goto Fatories -> ModelFactory.php
+    Goto DatabaseSeeder.php
+    cmd -> php artisan db:seed
+        -> php artisan migrate:fresh --seed => to drop all table and create new ones with seed
+Create AuthorController to do CRUD operations       
+Create Routes
+Goto App, create folder Traits, create ApiResponser.php
+Exceptions => Goto App -> Exceptions
+    Goto render action function
+
+================================================================
+Another Microservice
+
+composer create-project --prefer-dist laravel/lumen LumenBookApi
+
+php -S localhost:8001 -t public
+change .env file Database DB_CONNECTION from mysql to sqlite
+Add new file to Database folder name it database.sqlite
+Add .env and database.sqlite to gitignore file
+Goto app.php to uncomment facades and eloquent
+Goto http://www.unit-conversion.info/texttools/random-string-generator/ to get appKey , generate a length 32
+Add key generated to APP_Key in env
+Migrations: php artisan make:migration CreateBooksTable --create=books
+            php artisan migrate
+Rename the Model class User to Book 
+Factory for Book => to create random profile
+    Goto Fatories -> ModelFactory.php
+    Goto DatabaseSeeder.php
+    cmd -> php artisan db:seed
+        -> php artisan migrate:fresh --seed => to drop all table and create new ones with seed
+Create BookController to do CRUD operations
+Create Routes
+Goto App, create folder Traits, create ApiResponser.php
+Exceptions => Goto App -> Exceptions
+    Goto render action function
+
+===================================================================================
+Another Microservice ==> Creating Gateway Api
+
+composer create-project --prefer-dist laravel/lumen LumenGateway
+php -S localhost:8002 -t public
+change .env file Database DB_CONNECTION from mysql to sqlite
+Add new file to Database folder name it database.sqlite
+Add .env and database.sqlite to gitignore file
+Goto http://www.unit-conversion.info/texttools/random-string-generator/ to get appKey , generate a length 32
+Add key generated to APP_Key in env
+
+Create AuthorController & BookController in LumenAPiGateway
+Goto App, create folder Traits, create ApiResponser.php
+Create Routes
+composer require guzzlehttp/guzzle
+create folder name it config and create a file inside it name it services.php
+Goto app.php to uncomment facades and eloquent and register config file there
+Go back to Traits folder, add ConsumesExternalService.php file
+Go back to .env to add BASEURL FOR Author and Book
+Goto app, create a folder services and add AuthorService and BookService
+
+AUTHENTICATION => https://github.com/dusterio/lumen-passport
+    composer require dusterio/lumen-passport
+Goto app, uncomment register of AuthServicProvider, routeMiddleware
+Migrations: php artisan migrate
+            php artisan passport:install
+    Goto Storage->log to see public and private key
+    Add storage/*.key to gitignore file
+Goto Providers -> AuthServiceProvider and modified the code
+Goto config folder and create a file inside it name it auth.php
+
+Create a new client for AUTHENTICATION
+    ==> php artisan passport:client
+            user ID ==> 
+            client name ==> MyClient
+            redirect the request ==> 
+        Copy the client secret and use it in postman to login i.e
+            URL => http://localhost:8002/oauth/token
+            grant_type => client_credentials
+            client_id => 2
+            client_secret => R6NTjKBzpGVECu46anY1CGbXAoXtFrv1YSBjWEY9
+
+Goto LumenAuthorApi->app->Http->Middleware, add new class name it AuthenticateAccess.php
+Goto LumenBookApi->app->Http->Middleware, add new class name it AuthenticateAccess.php
+USERS ACCOUNT
+    Migrations: php artisan migrate:fresh --seed
+                php artisan passport:install
